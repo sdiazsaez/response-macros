@@ -15,6 +15,10 @@ class XLSX implements ResponseMacroInterface {
     public function run($factory) {
         $factory->macro('xlsx', function (array $vars, $status = 200, array $header = [], $xml = null) {
 
+            if(count($vars) <= 0) {
+                return Response::make('La solicitud no contiene registros', 412);
+            }
+
             $re = '/\/([^\/]+)\./';
             $str = Request::path();
             preg_match($re, $str, $matches);
