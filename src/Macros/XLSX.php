@@ -10,8 +10,8 @@ use Larangular\ResponseMacros\ResponseMacroInterface;
 
 class XLSX implements ResponseMacroInterface {
 
-    public function run($factory) {
-        $factory->macro('xlsx', function (array $vars, $status = 200, array $header = [], $xml = null) {
+    public function run($factory): void {
+        $factory->macro('xlsx', static function (array $vars, $status = 200, array $header = [], $xml = null) {
 
             if (count($vars) <= 0) {
                 return Response::make('La solicitud no contiene registros', 412);
