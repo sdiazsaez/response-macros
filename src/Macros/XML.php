@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Response;
 class XML implements ResponseMacroInterface {
 
     public function run($factory): void {
-        $factory->macro('xml', static function (array $vars, $status = 200, array $header = [], $xml = null) {
+        $factory->macro('xml', function (array $vars, $status = 200, array $header = [], $xml = null) {
             if (is_null($xml)) {
                 $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><response/>');
             }
