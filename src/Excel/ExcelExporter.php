@@ -17,7 +17,11 @@ class ExcelExporter {
                              ->setSerialiser($this->getHeaderSerializer($collection));
     }
 
-    private function makeFlatCollection(array $array): Collection {
+    protected function makeFlatCollection(array $array): Collection {
+        if ($this->isAssoc($array)) {
+            $array = [$array];
+        }
+
         foreach ($array as $key => $value) {
             $array[$key] = Arr::dot($value);
         }
@@ -25,7 +29,7 @@ class ExcelExporter {
         return Collection::make($array);
     }
 
-    private function getHeaderSerializer(Collection $collection): BasicSerialiser {
+    protected function getHeaderSerializer(Collection $collection): BasicSerialiser {
         $lastCount = 0;
         $higherCountIndex = 0;
 
@@ -38,5 +42,10 @@ class ExcelExporter {
         }
 
         return new HeaderSerializer(array_keys($collection[$higherCountIndex]));
+    }
+
+    private function isAssoc(array $arr): bool {
+        if ([] === $arr) return false;
+        return array_keys($arr) !== range(0, count($arr) - 1);
     }
 }
