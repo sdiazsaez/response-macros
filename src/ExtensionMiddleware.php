@@ -24,9 +24,9 @@ class ExtensionMiddleware {
 
     public function handle(Request $request, Closure $next) {
         $extension = '';
-        if ($request->filled('extension')) {
-            $extension = str_replace('.', '', $request->extension);
-            $request->request->remove('extension');
+        if ($request->filled('rm_extension')) {
+            $extension = str_replace('.', '', $request->rm_extension);
+            $request->request->remove('rm_extension');
         }
 
         $response = $next($request);
