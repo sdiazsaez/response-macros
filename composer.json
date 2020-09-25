@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "illuminate/support": "^5.8|^6.0|^7.0|^8.0",
+        "illuminate/support": "~5.8.0|^6.0|^7.0|^8.0",
         "larangular/support": "^0.1.0|^0.2.0",
         "mtownsend/response-xml": "^1.0",
         "cyber-duck/laravel-excel": "^1.0|^2.0"
