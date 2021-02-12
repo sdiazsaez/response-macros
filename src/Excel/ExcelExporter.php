@@ -11,37 +11,34 @@ use Illuminate\Support\Collection;
 class ExcelExporter {
 
     public function load(array $array): Excel {
-        $collection = $this->makeFlatCollection($array);
+        $config = $this->getConfig($array);
         return ExporterFacade::make('Excel')
-                             ->load($collection)
-                             ->setSerialiser($this->getHeaderSerializer($collection));
+                             ->load($config['data'])
+                             ->setSerialiser($config['serializer']);
     }
 
-    protected function makeFlatCollection(array $array): Collection {
+    private function getConfig(array $array): array {
         if ($this->isAssoc($array)) {
             $array = [$array];
         }
 
+        $header = [];
         foreach ($array as $key => $value) {
-            $array[$key] = Arr::dot($value);
+            $flatArray = Arr::dot($value);
+            $header = array_merge($header, array_keys($flatArray));
+            $isArrayValue = array_filter($flatArray, static function($value) {
+                return is_array($value);
+            });
+
+            $isArrayValue = array_fill_keys(array_keys($isArrayValue), '');
+            $array[$key] = array_merge($flatArray, $isArrayValue);
         }
 
-        return Collection::make($array);
-    }
-
-    protected function getHeaderSerializer(Collection $collection): BasicSerialiser {
-        $lastCount = 0;
-        $higherCountIndex = 0;
-
-        foreach ($collection as $key => $value) {
-            $valueLenght = count($value);
-            if ($lastCount < $valueLenght) {
-                $lastCount = $valueLenght;
-                $higherCountIndex = $key;
-            }
-        }
-
-        return new HeaderSerializer(array_keys($collection[$higherCountIndex]));
+        $header = array_values(array_unique($header));
+        return [
+            'data' => Collection::make($array),
+            'serializer' => new HeaderSerializer($header)
+        ];
     }
 
     private function isAssoc(array $arr): bool {
