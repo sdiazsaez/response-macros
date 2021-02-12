@@ -26,7 +26,7 @@ class XLSX implements ResponseMacroInterface {
             preg_match($re, $str, $matches);
 
             $fileName = $matches[1] ?? 'untitled';
-            $fileName .= '.xls';
+            $fileName .= '.xlsx';
 
             $excel = (new ExcelExporter())->load($vars);
             if (empty($header)) {
