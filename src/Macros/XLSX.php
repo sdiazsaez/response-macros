@@ -2,6 +2,7 @@
 
 namespace Larangular\ResponseMacros\Macros;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Response;
 use Larangular\ResponseMacros\Excel\ExcelExporter;
@@ -28,6 +29,9 @@ class XLSX implements ResponseMacroInterface {
             $fileName = $matches[1] ?? 'untitled';
             $fileName .= '.xlsx';
 
+            if(Arr::has($vars, ['current_page', 'data'])) {
+                $vars = $vars['data'];
+            }
             $excel = (new ExcelExporter())->load($vars);
             if (empty($header)) {
                 $header['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
