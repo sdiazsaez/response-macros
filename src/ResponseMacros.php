@@ -3,10 +3,7 @@
 namespace Larangular\ResponseMacros;
 
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Larangular\ResponseMacros\Macros\{
-    XML,
-    XLSX
-};
+use Larangular\ResponseMacros\Macros\{CSV, XML, XLSX};
 
 class ResponseMacros {
     /**
@@ -16,6 +13,7 @@ class ResponseMacros {
     protected $macros = [
         XML::class,
         XLSX::class,
+        CSV::class
     ];
 
     /**
