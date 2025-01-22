@@ -11,4 +11,5 @@ abstract class ExtensionsEnum {
     const JSON = 'json';
     const XLSX = 'xlsx';
     const XML  = 'xml';
+    const CSV = 'csv';
 }

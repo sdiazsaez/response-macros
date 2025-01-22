@@ -27,6 +27,7 @@ class ExtensionMiddleware {
         if ($request->filled('rm_extension')) {
             $extension = str_replace('.', '', $request->rm_extension);
             $request->request->remove('rm_extension');
+            $request->query->remove('rm_extension');
         }
 
         $response = $next($request);
@@ -36,6 +37,9 @@ class ExtensionMiddleware {
                 break;
             case ExtensionsEnum::XLSX:
                 return response()->xlsx($this->getContentResponse($response));
+                break;
+            case ExtensionsEnum::CSV:
+                return response()->csv($this->getContentResponse($response));
                 break;
             case ExtensionsEnum::JSON:
             default:
