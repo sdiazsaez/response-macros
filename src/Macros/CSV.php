@@ -15,6 +15,33 @@ class CSV implements ResponseMacroInterface {
                 return Response::make('The request contains no records', 412);
             }
 
+
+            function arrayToCsv(array $data): string {
+                // Open output buffer
+                $output = fopen('php://temp', 'r+');
+
+                // Extract and write headers if array is associative or contains arrays
+                if (isset($data[0]) && is_array($data[0])) {
+                    fputcsv($output, array_keys($data[0]));
+                }
+
+                // Write rows to CSV
+                foreach ($data as $row) {
+                    if (is_array($row)) {
+                        fputcsv($output, $row);
+                    } else {
+                        fputcsv($output, [$row]); // Handle non-associative single values
+                    }
+                }
+
+                // Get content and close output buffer
+                rewind($output);
+                $csvContent = stream_get_contents($output);
+                fclose($output);
+
+                return $csvContent;
+            }
+
             /**
              * Match last resource name
              * /route/resource/method.csv => method
@@ -31,7 +58,7 @@ class CSV implements ResponseMacroInterface {
             }
 
             // Convert array to CSV string
-            $csvContent = $this->arrayToCsv($vars);
+            $csvContent = arrayToCsv($vars);
 
             if (empty($header)) {
                 $header['Content-Type'] = 'text/csv';
@@ -40,31 +67,5 @@ class CSV implements ResponseMacroInterface {
 
             return Response::make($csvContent, $status, $header);
         });
-    }
-
-    private function arrayToCsv(array $data): string {
-        // Open output buffer
-        $output = fopen('php://temp', 'r+');
-
-        // Extract and write headers if array is associative or contains arrays
-        if (isset($data[0]) && is_array($data[0])) {
-            fputcsv($output, array_keys($data[0]));
-        }
-
-        // Write rows to CSV
-        foreach ($data as $row) {
-            if (is_array($row)) {
-                fputcsv($output, $row);
-            } else {
-                fputcsv($output, [$row]); // Handle non-associative single values
-            }
-        }
-
-        // Get content and close output buffer
-        rewind($output);
-        $csvContent = stream_get_contents($output);
-        fclose($output);
-
-        return $csvContent;
     }
 }
